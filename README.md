@@ -16,3 +16,7 @@ git clone --depth 1 https://github.com/tke-apps/nodelocaldns.git
 cd nodelocaldns
 make
 ```
+
+## 关于版本
+
+本项目所使用的 NodeLocalDNS addon 的 YAML 是 Kubernetes [官方提供的 YAML](https://raw.githubusercontent.com/kubernetes/kubernetes/master/cluster/addons/dns/nodelocaldns/nodelocaldns.yaml) 自动替换生成的，实时保持最新版本。
