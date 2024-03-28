@@ -19,11 +19,55 @@ make
 
 ## 修改 kubelet 参数
 
-如果要让 DNS 缓存组件生效，还需要配置节点上的 kubelet 参数：`--cluster-dns=169.254.20.10`，下面介绍配置方法。
+如果要让 DNS 缓存组件生效，还需要配置节点上的 kubelet 参数：`--cluster-dns=169.254.20.10`。
+
+可以通过以下脚本进行修改并重启 kubelet 来生效:
+
+```bash
+sed -i 's/CLUSTER_DNS.*/CLUSTER_DNS="--cluster-dns=169.254.20.10"/' /etc/kubernetes/kubelet
+systemctl restart kubelet
+```
+
+挨个手动配置不太现实，下面介绍自动化的配置方法。
 
 ### 配置增量节点
 
+新建节点或节点池里指定节点初始化后的【自定义脚本】，这样就可以让节点初始化后自动执行脚本来配置 kubelet 参数：
+
+![](./img/custom-script.png)
+
+> 已有的节点池也可以通过修改节点池配置来指定自定义脚本。
+
 ### 修改存量节点
+
+可以 ansible 来批量修改，ansible 安装方式参考 [官方文档: Installing Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html) 。
+
+安装好 ansible 之后，按照以下步骤操作:
+
+1. 导出所有节点 IP 到 `hosts.ini`:
+
+```bash
+kubectl get nodes -o jsonpath='{.items[*].status.addresses[?(@.type=="InternalIP")].address}' | tr ' ' '\n' | grep -vE '^169\.254\.*' > hosts.ini
+```
+
+2. 准备脚本 `modify-kubelet.sh`:
+
+```bash
+sed -i 's/CLUSTER_DNS.*/CLUSTER_DNS="--cluster-dns=169.254.20.10"/' /etc/kubernetes/kubelet
+systemctl restart kubelet
+```
+
+3. 准备可以用于节点登录的 ssh 秘钥或密码 (秘钥改名为 key，并执行 `chmod 0600 key`)
+4. 使用 ansible 在所有节点上运行脚本 `modify-kubelet.sh`:
+    * 使用秘钥的示例:
+      ```bash
+      ansible all -i hosts.ini --ssh-common-args="-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" --user root --private-key=key -m script -a "mo  dify-kubelet.sh"
+      ```
+    * 使用密码的示例:
+      ```bash
+      ansible all -i hosts.ini --ssh-common-args="-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" -m script --extra-vars "ansible_user=root an  sible_password=yourpassword" -a "modify-kubelet.sh"
+      ```
+   > **注:** 如果节点使用的 ubuntu 系统，默认 user 是 ubuntu，可以自行替换下，另外 ansible 参数再加上 `--become --become-user=root` 以便让 ansible 执行脚本时拥有 root 权限，避免操作失败。
 
 ## 关于版本
 
