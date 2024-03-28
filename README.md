@@ -1,6 +1,6 @@
 # NodeLocalDNS
 
-在 TKE 上的 DNS 缓存组件，仅用于 GlobalRouter 网络模式的集群，且 kube-proxy 是 IVPS 模式，其它场景可直接安装 TKE 官方的 [NodeLocalDNSCache 插件](https://cloud.tencent.com/document/product/457/49423)。
+在 TKE 上的本地 DNS 缓存组件，仅用于 GlobalRouter 网络模式的集群，且 kube-proxy 是 IVPS 模式，其它场景可直接安装 TKE 官方的 [NodeLocalDNSCache 插件](https://cloud.tencent.com/document/product/457/49423)。
 
 ## 前提条件
 
