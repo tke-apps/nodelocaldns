@@ -1,7 +1,9 @@
+SHELL := /bin/bash
+
 all: update-chart generate-values install
 
 generate-values:
-	echo "kubednsIp: $(kubectl get svc kube-dns -n kube-system -o jsonpath={.spec.clusterIP})" > values.yaml
+	echo "kubednsIp: `kubectl get svc kube-dns -n kube-system -o jsonpath={.spec.clusterIP}`" > values.yaml
 
 install: generate-values
 	kustomize build --enable-helm . | kubectl apply -f -
