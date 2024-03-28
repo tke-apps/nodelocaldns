@@ -21,6 +21,8 @@ make
 
 如果要让 DNS 缓存组件生效，还需要配置节点上的 kubelet 参数：`--cluster-dns=169.254.20.10`。
 
+> IPVS 模式集群由于需要为所有 Service 在 `kube-ipvs0` 这个 dummy 网卡上绑对应的 Cluster IP，以实现 IPVS 转发，所以 localdns 就无法再监听集群 DNS 的 Cluster IP。而 kubelet 的 `--cluster-dns` 默认指向的是集群 DNS 的 Cluster IP 而不是 localdns 监听的地址，安装 localdns 之后集群中的 Pod 默认还是使用的集群 DNS 解析，所以我们需要修改 kubelet 的 `--cluster-dns` 参数。
+
 可以通过以下脚本进行修改并重启 kubelet 来生效:
 
 ```bash
