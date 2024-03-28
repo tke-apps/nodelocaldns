@@ -17,6 +17,14 @@ cd nodelocaldns
 make
 ```
 
+## 修改 kubelet 参数
+
+如果要让 DNS 缓存组件生效，还需要配置节点上的 kubelet 参数：`--cluster-dns=169.254.20.10`，下面介绍配置方法。
+
+### 配置增量节点
+
+### 修改存量节点
+
 ## 关于版本
 
 本项目所使用的 NodeLocalDNS addon 的 YAML 是 Kubernetes [官方提供的 YAML](https://raw.githubusercontent.com/kubernetes/kubernetes/master/cluster/addons/dns/nodelocaldns/nodelocaldns.yaml) 自动替换生成的，实时保持最新版本。
