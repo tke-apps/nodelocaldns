@@ -1,0 +1,3 @@
+kubednsIp: "" # 必须提供，获取方式： kubectl get svc kube-dns -n kube-system -o jsonpath={.spec.clusterIP}
+localdnsIp: 169.254.20.10
+clusterDomain: cluster.local
