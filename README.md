@@ -69,6 +69,8 @@ systemctl restart kubelet
       ```
    > **注:** 如果节点使用的 ubuntu 系统，默认 user 是 ubuntu，可以自行替换下，另外 ansible 参数再加上 `--become --become-user=root` 以便让 ansible 执行脚本时拥有 root 权限，避免操作失败。
 
-## 关于版本
+## 关于 NodeLocalDNS 版本
 
 本项目所使用的 NodeLocalDNS addon 的 YAML 是 Kubernetes [官方提供的 YAML](https://raw.githubusercontent.com/kubernetes/kubernetes/master/cluster/addons/dns/nodelocaldns/nodelocaldns.yaml) 自动替换生成的，实时保持最新版本。
+
+> 官方的依赖镜像 `registry.k8s.io/dns/k8s-dns-node-cache` 在国内无法拉取，已替换为 DockerHub 上的 mirror 镜像 [k8smirror/k8s-dns-node-cache](https://hub.docker.com/repository/docker/k8smirror/k8s-dns-node-cache)，会周期性的自动同步最新的 tag，可放心使用。
