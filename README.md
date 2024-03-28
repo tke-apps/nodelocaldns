@@ -71,8 +71,19 @@ systemctl restart kubelet
       ```
    > **注:** 如果节点使用的 ubuntu 系统，默认 user 是 ubuntu，可以自行替换下，另外 ansible 参数再加上 `--become --become-user=root` 以便让 ansible 执行脚本时拥有 root 权限，避免操作失败。
 
+## 关于存量 Pod
+
+集群中正在运行的存量 Pod 还是会使用旧的集群 DNS，等重建后会自动切换到 localdns，新创建的 Pod 也都会默认使用 localdns。
+
+一般没特别需要的情况下，可以不管存量 Pod，等下次更新， Pod 重建后就会自动切换到 localdns；如果想要立即切换，可以将工作负载滚动更新触发 Pod 重建来实现手动切换。
+
 ## 关于 NodeLocalDNS 版本
 
 本项目所使用的 NodeLocalDNS addon 的 YAML 是 Kubernetes [官方提供的 YAML](https://raw.githubusercontent.com/kubernetes/kubernetes/master/cluster/addons/dns/nodelocaldns/nodelocaldns.yaml) 自动替换生成的，实时保持最新版本。
 
 > 官方的依赖镜像 `registry.k8s.io/dns/k8s-dns-node-cache` 在国内无法拉取，已替换为 DockerHub 上的 mirror 镜像 [k8smirror/k8s-dns-node-cache](https://hub.docker.com/repository/docker/k8smirror/k8s-dns-node-cache)，会周期性的自动同步最新的 tag，可放心使用。
+
+## 参考资料
+
+* [Using NodeLocal DNSCache in Kubernetes clusters](https://kubernetes.io/docs/tasks/administer-cluster/nodelocaldns/)
+* [TKE 实践指南：IPVS 模式安装 NodeLocalDNS](https://imroc.cc/tke/networking/install-localdns-with-ipvs)
